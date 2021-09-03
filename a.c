@@ -7,9 +7,17 @@
 void *thread_func(void *param)
 {
     int *array = param;
-    for(int i=0; i < SIZE; i++){
-        array[i] = 0;
-        sleep(1);
+    int r;
+    struct timespec ts;
+
+    if (timespec_get(&ts, TIME_UTC) == 0) {
+        exit(1);
+    }
+    srandom(ts.tv_nsec ^ ts.tv_sec);
+    r = random()%10;  
+
+    if(0 < r && r < SIZE){
+        array[r] = 0;
     }
 }
 
@@ -24,7 +32,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    sleep(2);
+    sleep(1);
     for(int i=0; i<SIZE; i++){
         printf("100/array[%d] = %d\n", i, 100/array[i]);
     }
